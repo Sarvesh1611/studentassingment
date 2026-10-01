@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3 mb-4">
+            <h5>Create New Assignment</h5>
+            <form method="POST" action="/faculty/assignment/new">
+                <div class="mb-2"><input type="text" name="title" class="form-control" placeholder="Title" required></div>
+                <div class="mb-2"><input type="text" name="subject" class="form-control" placeholder="Subject" required></div>
+                <div class="mb-2"><textarea name="description" class="form-control" placeholder="Description" required></textarea></div>
+                <div class="mb-2"><label>Due Date</label><input type="datetime-local" name="due_date" class="form-control" required></div>
+                <div class="mb-2"><input type="number" name="max_marks" class="form-control" placeholder="Max Marks" min="1" required></div>
+                <button type="submit" class="btn btn-primary w-100">Publish</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h4>Your Assignments</h4>
+        <div class="list-group">
+            {% for a in assignments %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ a.title }}</strong> ({{ a.subject }})<br>
+                    <small>Due: {{ a.due_date[:16] }} | Max: {{ a.max_marks }}</small>
+                </div>
+                <!-- Notice we use a.id instead of a._id -->
+                <a href="/faculty/assignment/{{ a.id }}" class="btn btn-outline-primary btn-sm">View Submissions</a>
+            </div>
+            {% else %}
+            <p class="text-muted">No assignments created yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

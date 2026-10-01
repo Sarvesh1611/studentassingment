@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="/faculty" class="btn btn-secondary mb-3">&larr; Back</a>
+<h3>Submissions for: {{ assignment.title }}</h3>
+<p>Max Marks: {{ assignment.max_marks }}</p>
+
+<table class="table table-bordered bg-white shadow-sm">
+    <thead><tr><th>Student</th><th>Link / Notes</th><th>Grade & Feedback</th></tr></thead>
+    <tbody>
+        {% for sub in submissions %}
+        <tr>
+            <td>{{ sub.student_name }}</td>
+            <td><a href="{{ sub.project_link }}" target="_blank">View Link</a><br><small>{{ sub.work_notes }}</small></td>
+            <td>
+                <!-- Notice we use sub.id -->
+                <form method="POST" action="/faculty/submission/{{ sub.id }}/grade">
+                    <div class="input-group mb-2">
+                        <input type="number" name="marks" class="form-control" placeholder="Marks" min="0" max="{{ assignment.max_marks }}" value="{{ sub.marks }}" required>
+                        <span class="input-group-text">/ {{ assignment.max_marks }}</span>
+                    </div>
+                    <textarea name="remarks" class="form-control mb-2" placeholder="Remarks...">{{ sub.remarks }}</textarea>
+                    <button type="submit" class="btn btn-success btn-sm w-100">Save Grade</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="text-center">No submissions yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

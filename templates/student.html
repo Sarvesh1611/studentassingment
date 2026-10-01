@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Available Assignments</h3>
+<div class="row">
+    {% for a in assignments %}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 p-3">
+            <h5>{{ a.title }} <span class="badge bg-secondary">{{ a.subject }}</span></h5>
+            <p>{{ a.description }}</p>
+            <small class="text-muted">Due: {{ a.due_date[:16] }} | Max: {{ a.max_marks }}</small>
+            <hr>
+            
+            {% if a.submission %}
+                <div class="alert alert-light border">
+                    <strong>Your Link:</strong> <a href="{{ a.submission.project_link }}">{{ a.submission.project_link }}</a><br>
+                    {% if a.submission.status == 'graded' %}
+                        <strong>Grade:</strong> {{ a.submission.marks }} / {{ a.max_marks }}<br>
+                        <strong>Feedback:</strong> {{ a.submission.remarks }}
+                    {% else %}
+                        <em>Awaiting grading...</em>
+                    {% endif %}
+                </div>
+            {% elif a.is_overdue %}
+                <button class="btn btn-secondary w-100" disabled>Deadline Passed</button>
+            {% else %}
+                <!-- Notice we use a.id -->
+                <form method="POST" action="/student/assignment/{{ a.id }}/submit">
+                    <input type="url" name="project_link" class="form-control mb-2" placeholder="Project Link (URL)" required>
+                    <textarea name="work_notes" class="form-control mb-2" placeholder="Work Notes..." required></textarea>
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
